@@ -1,6 +1,5 @@
 from discord.ext import commands
 import settings
-from enum import Enum
 import datetime
 
 bot = commands.Bot(command_prefix='/')
@@ -22,13 +21,13 @@ async def on_voice_state_update(member, before, after):
     if before.channel == after.channel:
         return
 
-    if len(tmp_channels) > 0 and before.channel.id in tmp_channels.keys():
+    if before is not None and before.channel.id in tmp_channels.keys():
         if len(before.channel.members) == 0:
             await before.channel.delete()
             del tmp_channels[before.channel.id]
             print('delete channel: {}'.format(before.channel.id))
 
-    if len(channels) > 0 and after.channel.id in channels.keys():
+    if after is not None and after.channel.id in channels.keys():
         type = channels[after.channel.id]
 
         limit = channel_types[type]
