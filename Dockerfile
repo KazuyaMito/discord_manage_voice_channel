@@ -18,3 +18,5 @@ RUN pip install --upgrade pip
 RUN pip install --upgrade setuptools
 RUN pip install discord.py
 RUN pip install python-dotenv
+
+CMD python entry.py
