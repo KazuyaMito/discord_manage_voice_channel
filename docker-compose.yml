@@ -6,5 +6,6 @@ services:
     container_name: 'discord_voice_channel_manage'
     working_dir: '/app/'
     tty: true
+    command: python entry.py
     # volumes:
     #   - ./app/:/app/
