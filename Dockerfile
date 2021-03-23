@@ -11,7 +11,7 @@ ENV TX JST-9
 ENV TERM xterm
 
 WORKDIR /app
-ADD ./app /app
+# ADD ./app /app
 
 RUN apt-get install -y vim less
 RUN pip install --upgrade pip
