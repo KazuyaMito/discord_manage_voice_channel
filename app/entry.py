@@ -2,7 +2,7 @@ from discord.ext import commands
 import settings
 import datetime
 
-bot = commands.Bot(command_prefix='!')
+bot = commands.Bot(command_prefix='/')
 channel_types = {'apex': 3, 'valorant': 5, 'other':0}
 channels = {}
 tmp_channels = {}
