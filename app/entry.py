@@ -64,17 +64,17 @@ async def create(ctx, type_name=None, category_name=None):
 
 
 @bot.command()
-async def link(ctx, channel_name=None, type_name=None):
+async def link(ctx, channel_id=0, type_name=None):
     global channels
 
-    if channel_name is None or type_name is None:
-        await ctx.send("チャンネル名とチャンネルタイプは両方入力してください\nex: /link [channel_name] [channel_type]")
+    if channel_id == 0 or type_name is None:
+        await ctx.send("チャンネル名とチャンネルタイプは両方入力してください\nex: /link [channel_id] [channel_type]")
         return
 
     guild = ctx.guild
-    channel = next(filter(lambda c: c.name == channel_name, guild.voice_channels), None)
+    channel = next(filter(lambda c: c.id == channel_id, guild.voice_channels), None)
     if channel is None:
-        await ctx.send("チャンネルが見つかりません: {}".format(channel_name))
+        await ctx.send("チャンネルが見つかりません: {}".format(channel_id))
         return
 
     type = next(filter(lambda t: t == type_name, channel_types.keys()), None)
@@ -84,7 +84,26 @@ async def link(ctx, channel_name=None, type_name=None):
 
     channels[channel.id] = type
     await ctx.send("{}を管理用チャンネルとして登録しました".format(channel.name))
-    print("register management channel: {}".format(channel.id))
+    print("link management channel: {}".format(channel.id))
+
+
+@bot.command()
+async def unlink(ctx, channel_id=0):
+    global channels
+
+    if channel_id == 0:
+        await ctx.send("チャンネルIDを入力してください\nex: /unlink [channel_id]")
+        return
+
+    guild = ctx.guild
+    channel = next(filter(lambda c: c.id == channel_id, guild.voice_channels), None)
+    if channel is None:
+        await ctx.send("チャンネルが見つかりません: {}".format(channel_id))
+        return
+
+    del channels[channel.id]
+    await ctx.send("{}を通常チャンネルに変更しました".format(channel.name))
+    print("unlink management channel: {}".format(channel.id))
 
 
 @bot.command()
@@ -104,6 +123,53 @@ async def register(ctx, type_name=None, limit=0):
 
     await ctx.send("{0}を新しいチャンネルタイプとして登録しました\n人数制限は{1}".format(type_name, limit_message))
     print("register channel type: {0} (limit = {1})".format(type_name, limit))
+
+
+@bot.command()
+async def unregister(ctx, type_name=None):
+    global channel_types
+
+    if type_name is None:
+        await ctx.send("チャンネルタイプを入力してください\nex: /unregister [channel_type]")
+        return
+
+    channel_type = next(filter(lambda t: t == type_name, channel_types.keys()), None)
+    if channel_type is None:
+        await ctx.send("チャンネルタイプが見つかりません: {}".format(type_name))
+        return
+
+    del channel_types[channel_type]
+    await ctx.send("チャンネルタイプから{}を削除しました".format(type_name))
+    print("unregister channel type: {}".format(type_name))
+
+
+@bot.command(aliases=['channels'])
+async def _channels(ctx):
+    global channels
+
+    channel_names = ""
+    voice_channels = ctx.guild.voice_channels
+    for c in channels.keys():
+        channel = next(filter(lambda ch: ch.id == c, voice_channels), None)
+        if channel is None:
+            print("{} is not found. delete from channels.".format(c))
+            del channels[c]
+            continue
+
+        channel_names += channel.name + "\n"
+
+    await ctx.send("```\nManagement Channels:\n{}\n```".format(channel_names))
+
+
+@bot.command(aliases=['channel_types'])
+async def _channel_types(ctx):
+    global channel_types
+
+    type_names = ""
+    for t in channel_types.keys():
+        type_names += t + "\n"
+
+    await ctx.send("```\nChannel Types:\n{}\n```".format(type_names))
 
 
 bot.run(settings.TOKEN)
