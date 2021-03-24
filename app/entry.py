@@ -2,7 +2,7 @@ from discord.ext import commands
 import settings
 import datetime
 
-bot = commands.Bot(command_prefix='/')
+bot = commands.Bot(command_prefix='!')
 channel_types = {'apex': 3, 'valorant': 5, 'other':0}
 channels = {}
 tmp_channels = {}
@@ -21,13 +21,13 @@ async def on_voice_state_update(member, before, after):
     if before.channel == after.channel:
         return
 
-    if before is not None and before.channel.id in tmp_channels.keys():
+    if before.channel is not None and before.channel.id in tmp_channels.keys():
         if len(before.channel.members) == 0:
             await before.channel.delete()
             del tmp_channels[before.channel.id]
             print('delete channel: {}'.format(before.channel.id))
 
-    if after is not None and after.channel.id in channels.keys():
+    if after.channel is not None and after.channel.id in channels.keys():
         type = channels[after.channel.id]
 
         limit = channel_types[type]
