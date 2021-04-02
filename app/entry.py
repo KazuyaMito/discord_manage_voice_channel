@@ -1,14 +1,22 @@
 from discord.ext import commands
 import settings
 import datetime
+import mysql.connector
 
 bot = commands.Bot(command_prefix='/')
-channel_types = {'apex': 3, 'valorant': 5, 'other':0}
-channels = {}
 tmp_channels = {}
+conn = mysql.connector.connect(
+    host='docker-mysql',
+    port='3306',
+    user='root',
+    password='',
+    database='docker_db'
+)
 
 @bot.event
 async def on_ready():
+    conn.ping(reconnect=True)
+    print(conn.is_connected())
     print("on ready")
 
 
@@ -39,10 +47,14 @@ async def on_voice_state_update(member, before, after):
         await member.move_to(tmp_channel)
 
 
-@bot.command()
+@bot.command(aliases=['hoge'])
 async def create(ctx, type_name=None, category_name=None):
     global channel_types
     global channels
+
+    conn.ping(reconnect=True)
+    cur = conn.cursor(buffered=True)
+    insert_cur = conn.cursor(buffered=True)
 
     if type_name is None or category_name is None:
         await ctx.send("チャンネルタイプとカテゴリー名は両方入力してください\nex: /create [channel_type] [category_name]")
@@ -55,12 +67,16 @@ async def create(ctx, type_name=None, category_name=None):
         await ctx.send("{}というカテゴリー名はありません".format(category_name))
         return
 
-    if type_name in channel_types:
-        channel_name = "VC作成({})".format(type_name.upper())
-        channel = await category.create_voice_channel(channel_name)
-        channels[channel.id] = type_name
-        await ctx.message.delete()
-        print("create management channel: {}".format(channel.id))
+    cur.execute("SELECT name FROM channel_types")
+
+    for row in cur:
+        if row[0] == type_name:
+            channel_name = "VC作成({})".format(type_name.upper())
+            channel = await category.create_voice_channel(channel_name)
+            insert_cur.execute("INSERT INTO channels VALUES (%s, %s)", (channel.id, type_name))
+            conn.commit()
+            await ctx.message.delete()
+            print("create management channel: {}".format(channel.id))
 
 
 @bot.command()
