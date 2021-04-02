@@ -5,7 +5,7 @@ import mysql.connector
 
 bot = commands.Bot(command_prefix='/')
 conn = mysql.connector.connect(
-    host='docker-mysql',
+    host='localhost',
     port='3306',
     user='root',
     password='',

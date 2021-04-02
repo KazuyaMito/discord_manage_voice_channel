@@ -1,0 +1,1 @@
+INSERT INTO channel_types VALUES (1, 'apex', 3), (2, 'valorant', 5), (3, 'other', 0)
