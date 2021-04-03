@@ -2,14 +2,17 @@ from discord.ext import commands
 import settings
 import datetime
 import mysql.connector
+from urllib.parse import urlparse
+import os
 
 bot = commands.Bot(command_prefix='/')
+url = urlparse(os.environ['CLEARDB_DATABASE_URL'])
 conn = mysql.connector.connect(
-    host='localhost',
-    port='3306',
-    user='root',
-    password='',
-    database='docker_db'
+    host = url.hostname,
+    port = url.port,
+    user = url.username,
+    password = url.password,
+    database = url.path[1:],
 )
 
 @bot.event
