@@ -6,5 +6,29 @@ services:
     container_name: 'discord_voice_channel_manage'
     working_dir: '/app/'
     tty: true
+    environment:
+      CLEARDB_DATABASE_URL: mysql://root:@docker-mysql/docker_db
     # volumes:
     #   - ./app/:/app/
+    networks:
+      - docker-net
+  mysql:
+    build: ./app/mysql/
+    container_name: docker-mysql
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: docker_db
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    ports:
+      - 3314:3306
+    volumes:
+      - ./app/mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./app/mysql/conf.d:/etc/mysql/conf.d
+      - ./log/mysql:/var/log/mysql
+    networks:
+      - docker-net
+
+networks:
+  docker-net:
+    driver: bridge

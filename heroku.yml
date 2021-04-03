@@ -1,0 +1,9 @@
+setup:
+  addons:
+  - plan: heroku-mysql
+    as: DATABASE
+build:
+  docker:
+    worker: Dockerfile
+run:
+  worker: python entry.py

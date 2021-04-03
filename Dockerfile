@@ -18,5 +18,6 @@ RUN pip install --upgrade pip
 RUN pip install --upgrade setuptools
 RUN pip install discord.py
 RUN pip install python-dotenv
+RUN pip install mysql-connector-python
 
 CMD python entry.py
