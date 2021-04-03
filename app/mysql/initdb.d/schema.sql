@@ -15,6 +15,6 @@ CREATE TABLE channel_types (
 
 CREATE TABLE tmp_channels (
     id BIGINT NOT NULL,
-    type_name VARCHAR(32), NOT NULL,
+    type_name VARCHAR(32) NOT NULL,
     PRIMARY KEY (id)
 );

@@ -20,4 +20,4 @@ RUN pip install discord.py
 RUN pip install python-dotenv
 RUN pip install mysql-connector-python
 
-# CMD python entry.py
+CMD python entry.py
