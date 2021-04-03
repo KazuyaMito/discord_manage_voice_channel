@@ -9,7 +9,7 @@ bot = commands.Bot(command_prefix='/')
 url = urlparse(os.environ['CLEARDB_DATABASE_URL'])
 conn = mysql.connector.connect(
     host = url.hostname,
-    port = url.port,
+    port = 3306,
     user = url.username,
     password = url.password,
     database = url.path[1:],
