@@ -7,7 +7,7 @@ services:
     working_dir: '/app/'
     tty: true
     environment:
-      CLEARDB_DATABASE_URL: mysql://root:@docker-mysql/docker_db
+      DATABASE_URL: mysql://root:@docker-mysql/docker_db
     # volumes:
     #   - ./app/:/app/
     networks:

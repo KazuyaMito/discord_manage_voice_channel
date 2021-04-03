@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 import os
 
 bot = commands.Bot(command_prefix='/')
-url = urlparse(os.environ['CLEARDB_DATABASE_URL'])
+url = urlparse(os.environ['DATABASE_URL'])
 conn = mysql.connector.connect(
     host = url.hostname,
     port = 3306,
