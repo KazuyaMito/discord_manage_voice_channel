@@ -1,5 +1,4 @@
 from discord.ext import commands
-import settings
 import datetime
 import mysql.connector
 from urllib.parse import urlparse
@@ -237,4 +236,4 @@ async def _channel_types(ctx):
     await ctx.send("```\nChannel Types:\n{}\n```".format(type_names))
 
 
-bot.run(settings.TOKEN)
+bot.run(os.environ['DISCORD_BOT_TOKEN'])
